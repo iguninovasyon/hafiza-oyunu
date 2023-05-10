@@ -83,10 +83,7 @@ imgDivArray.forEach(targetCard => {
           console.log(lastCard)
           targetCard.classList.add("animate__animated", "animate__rubberBand")
           discoveredCards.push(targetCard);
-          party.confetti(card2, {
-            count: party.variation.range(20, 100),
-            size: party.variation.range(1.5, 1.2),
-          });
+
           if (isGameEnd(discoveredCards, imgDivArray)) {
             setTimeout(() => {
               winGame(currentUser);
@@ -264,8 +261,11 @@ function winGame(username) {
   imgsGrid.classList.add("hide");
   congratsDiv.classList.remove("hide");
   var paragraph = document.querySelector("#join_team_message");
-  var newContent = paragraph.innerHTML.replace("{username}", currentUser);
-  paragraph.innerHTML = newContent;
+
+
+  var newContent2 = paragraph.innerHTML.replace("{username}", currentUser);
+  paragraph.innerHTML = newContent2;
+  second_paragraph.innerHTML = newContent;
 }
 
 function looseGame(username) {
