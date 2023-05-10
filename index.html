@@ -19,11 +19,7 @@
     <script src="https://kit.fontawesome.com/56942480bb.js" crossorigin="anonymous"></script>
 
     <i id="score-toggle" class="fas fa-trophy"></i>
-    <div id="time"
-        style="width: 48px;min-width: 174px !important;min-height: 100px !important;height: 54px;;position: absolute;top: 13%;left: 13%;left: 12%;"
-        class="left-card card">
 
-    </div>
     <!-- <p style="font-family: 'Montserrat Alternates', sans-serif; font-weight: bold;
         color: hsla(208, 80%, 20%, .4);" id="time"></p>
     -->
@@ -35,6 +31,14 @@
         }
     </style>
     <div class="cards-row">
+
+
+        <div style="
+        width: 192px;
+        height: 64px;
+        margin-right: 10px;" id="time" class=" card">
+
+        </div>
         <div class="left-card card">
             <div class="choose-username">
                 <h1>İsmini Gir</h1>
@@ -69,23 +73,27 @@
             </div>
 
             <div id="congrats-container" class="final-container hide">
-                <
-                <h1>
-                    Tebrikler! 🎉
-                </h1>
+                <img src="assets/img/inovasyon.png" width="200px" height="200px">
+                <h1>Tebrikler! 🎉 </h1>
                 <h3><strong id="user-seconds"></strong> içinde bitirdin</h3>
+                <h4 id="join_team_message" style="padding-bottom: 1rem;
+                color: hsla(208, 80%, 50%, 0.8);">Sevgili {username}, öncelikle oyunumuzu oynadığınız için teşekkür
+                    ederiz. İnovasyon Kulübü Web Takımı olarak, sizleri takımımıza katılmaya davet etmek istiyoruz.
+
+                    Takımımız web tasarımı ve geliştirme konularında çalışmalar yürütmekte olup yenilikçi projelerde yer
+                    almaktayız. Eğer siz de bizimle birlikte inovasyona katkıda bulunmak isterseniz, lütfen bize
+                    e-mailinizi gönderin. Katılımınızı bekliyoruz.
+                </h4>
+                <input type="mail" value="" id="mail" placeholder="E-Posta" />
+                <button onclick="email_process()" class="game-button">Gönder</button>
+                <br>
                 <button class="play-again-btn game-button">
                     <i class="fas fa-undo-alt"></i>
                 </button>
 
-                <h4 id="join_team_message" style="padding-bottom: 1rem;
-                color: hsla(208, 80%, 50%, 0.8);"> Web Takımına Katılmak İster Misin?
-                    Sevgili {username}, oyunumuzu oynadığınız için teşekkürler. İnovasyon Kulübü Web Takımı olarak
-                    sizleri takımımıza katılmaya davet etmek istiyoruz.
-                    Web tasarımı ve geliştirme konularında çalışıyoruz ve yenilikçi projelerde yer alıyoruz. Siz de
-                    bizimle birlikte inovasyona katkıda bulunmak isterseniz, bize e-mailinizi gönderebilirsiniz.</h4>
-                <input type="mail" value="" id="mail" placeholder="E-Posta" />
-                <button onclick="email_process()" class="game-button">Gönder</button>
+
+
+
             </div>
 
             <div id="loose-container" class="final-container hide">
@@ -98,8 +106,6 @@
                 </button>
             </div>
         </div>
-        <canvas width="3840" height="1922"
-            style="position: fixed; top: 0px; left: 0px; width: calc(100%); height: calc(100%); margin: 0px; padding: 0px; z-index: 999999999; pointer-events: none;"></canvas>
         <div id="score-container" class="card score-container">
 
             <i class="fas fa-trophy" id="scores-trophy"></i>
