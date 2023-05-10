@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hafıza Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+<body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/56942480bb.js" crossorigin="anonymous"></script>
+
+    <i id="score-toggle" class="fas fa-trophy"></i>
+    <div id="time"
+        style="width: 48px;min-width: 174px !important;min-height: 100px !important;height: 54px;;position: absolute;top: 13%;left: 13%;left: 12%;"
+        class="left-card card">
+
+    </div>
+    <!-- <p style="font-family: 'Montserrat Alternates', sans-serif; font-weight: bold;
+        color: hsla(208, 80%, 20%, .4);" id="time"></p>
+    -->
+    <style>
+        #time {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <div class="cards-row">
+        <div class="left-card card">
+            <div class="choose-username">
+                <h1>İsmini Gir</h1>
+                <div class="username-container">
+                    <input type="text" id="username" name="username" autocomplete="off" spellcheck="false" />
+                    <p class="placeholder" id="placeholder">İsim</p>
+                </div>
+                <button id="play" class="game-button">
+                    <i class="fas fa-gamepad"></i>
+                </button>
+            </div>
+
+            <div id="images-grid" class="hide images-grid">
+
+            </div>
+
+            <div id="mode-container" class="hide">
+                <h1>Zorluk Seç</h1>
+                <div class="mode-btns">
+                    <button id="easy-btn" class="game-button">
+                        Kolay
+                    </button>
+                    <button id="hard-btn" class="game-button">
+                        Zor
+                    </button>
+                </div>
+            </div>
+
+            <div id="congrats-container" class="final-container hide">
+                <
+                <h1>
+                    Tebrikler! 🎉
+                </h1>
+                <h3><strong id="user-seconds"></strong> içinde bitirdin</h3>
+                <button class="play-again-btn game-button">
+                    <i class="fas fa-undo-alt"></i>
+                </button>
+
+                <h4 id="join_team_message" style="padding-bottom: 1rem;
+                color: hsla(208, 80%, 50%, 0.8);"> Web Takımına Katılmak İster Misin?
+                    Sevgili {username}, oyunumuzu oynadığınız için teşekkürler. İnovasyon Kulübü Web Takımı olarak
+                    sizleri takımımıza katılmaya davet etmek istiyoruz.
+                    Web tasarımı ve geliştirme konularında çalışıyoruz ve yenilikçi projelerde yer alıyoruz. Siz de
+                    bizimle birlikte inovasyona katkıda bulunmak isterseniz, bize e-mailinizi gönderebilirsiniz.</h4>
+                <input type="mail" value="" id="mail" placeholder="E-Posta" />
+                <button onclick="email_process()" class="game-button">Gönder</button>
+            </div>
+
+            <div id="loose-container" class="final-container hide">
+                <h1>
+                    Kaybettin!! 😵
+                </h1>
+                <h3>You did <strong id="tries-span"></strong> pairs in a row </h3>
+                <button class="play-again-btn game-button">
+                    <i class="fas fa-undo-alt"></i>
+                </button>
+            </div>
+        </div>
+        <canvas width="3840" height="1922"
+            style="position: fixed; top: 0px; left: 0px; width: calc(100%); height: calc(100%); margin: 0px; padding: 0px; z-index: 999999999; pointer-events: none;"></canvas>
+        <div id="score-container" class="card score-container">
+
+            <i class="fas fa-trophy" id="scores-trophy"></i>
+            <h2 class="user-scores score-title">Sıralama</h2>
+            <div class="ribbon-wrapper">
+                <img class="ribbon-tail"
+                    src="https://cdn.glitch.com/56d96ce9-5171-477f-8560-558ec3af0051%2Fribbon-tail.svg?v=1596043434209"
+                    alt="" />
+                <img class="ribbon-score"
+                    src="https://cdn.glitch.com/56d96ce9-5171-477f-8560-558ec3af0051%2Fribbon-score.svg?v=1596046610666"
+                    alt="" />
+            </div>
+
+            <div id="user-scores" class="user-scores"></div>
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+        <script>
+
+        </script>
+</body>
+<script src="script.js"></script>
+<script src="confetti.min.js"></script>
+
+</html>
