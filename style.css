@@ -31,7 +31,7 @@ h2 {
   width: 100%;
   justify-content: center;
   margin-top: 2rem;
-  align-items: center;
+  /*align-items: center;*/
 }
 
 .card {
@@ -113,7 +113,7 @@ h2 {
   justify-content: center;
 }
 
-.choose-username h1, .final-container h1, #mode-container h1 {
+.choose-username h1, .final-container h1, h3, h4, h5, #mode-container h1 {
   margin: 0;
   padding-bottom: 1rem;
   color: hsla(208, 80%, 50%, 0.8);
