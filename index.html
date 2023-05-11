@@ -31,12 +31,12 @@
         }
     </style>
     <div class="cards-row">
-
-
         <div style="
         width: 192px;
         height: 64px;
-        margin-right: 10px;" id="time" class=" card">
+        min-width: 200px;
+        margin-right: 10px;
+        " id="time" class=" card">
 
         </div>
         <div class="left-card card">
@@ -48,8 +48,9 @@
 
                 </div>
                 <div class="username-container">
-                    <input type="text" id="username" name="school_number" autocomplete="off" spellcheck="false" />
-                    <p class="placeholder" id="placeholder">Okul Numarası</p>
+                    <input type="text" id="" oninput="isValidNumber(this)" name="school_number" autocomplete="off"
+                        spellcheck="false" />
+                    <p class="placeholder" name="placeholder-school-number" id="placeholder">Numarası</p>
                 </div>
                 <button id="play" class="game-button">
                     <i class="fas fa-gamepad"></i>

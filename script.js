@@ -61,9 +61,13 @@ let hardMode = false;
 let imgDivArray = createGridContentArray(imgSrc);
 let discoveredCards = [];
 let currentUser = "";
+let school_number = "";
 let startTime;
 let scoresController = scoreBarController("user-scores");
 let card2 = document.getElementsByClassName("left-card card")[1];
+let elapsed_time;
+
+
 
 imgDivArray.forEach(targetCard => {
   targetCard.addEventListener("click", () => {
@@ -79,7 +83,6 @@ imgDivArray.forEach(targetCard => {
         tries++;
         if (areEqualCards(targetCard, lastCard)) {
           lastCard.classList.add("animate__animated", "animate__rubberBand")
-          lastCard.classList.add("test")
           console.log(lastCard)
           targetCard.classList.add("animate__animated", "animate__rubberBand")
           discoveredCards.push(targetCard);
@@ -120,7 +123,11 @@ document.addEventListener("keydown", event => {
 });
 
 for (let btn of playAgainBtns) {
+  btn.addEventListener("click", function () {
+    appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": null, hardMode: false });
+  })
   btn.addEventListener("click", playAgain);
+
 }
 
 easyBtn.addEventListener("click", () => {
@@ -163,7 +170,7 @@ function scoreBarController(barId) {
     },
 
     setUserTime(username, seconds) {
-      if (this.hasUser(username)) {
+      /*if (this.hasUser(username)) {
         let userContainer = this.getUser(username);
 
         if (!hardMode) {
@@ -175,11 +182,13 @@ function scoreBarController(barId) {
             seconds
           )} saniye (Zor Mod)`;
         }
-      }
+      }*/
     },
 
     setUserLost(username) {
+
       let userContainer = this.getUser(username);
+
       userContainer.lastElementChild.innerHTML = `<p>kaybettin! - ${tries -
         1} defa hata yaptın </p>`;
     }
@@ -189,14 +198,15 @@ function scoreBarController(barId) {
 function createUserScoreDiv(username) {
   let container = document.createElement("div");
   container.setAttribute("data-username", username);
-  container.innerHTML = `<h2>${username}</h2> <p>Oynuyor..</p>`;
+  //container.innerHTML = `<h2>${username}</h2> <p>Oynuyor..</p>`;
   return container;
 }
 
 
 function goToModePage() {
   let username = document.getElementById("username").value;
-  if (isValidUsername(username)) {
+  school_number = document.querySelector("body > div > div.left-card.card > div.choose-username > div:nth-child(3) > input[type=text]").value;
+  if (isValidUsername(username) && isValidUsername(school_number)) {
     currentUser = username.toLowerCase();
     modeContainer.classList.remove("hide");
     chooseUserDiv.classList.add("hide");
@@ -212,7 +222,10 @@ function playAgain() {
   congratsDiv.classList.add("hide");
 
   chooseUserDiv.classList.remove("hide");
-  document.getElementById("username").value = "";
+
+
+  document.querySelector("#username").value = "";
+  document.querySelector("body > div > div.left-card.card > div.choose-username > div:nth-child(3) > input[type=text]").value = ""
 }
 
 
@@ -229,16 +242,24 @@ function startGame(username) {
 
   modeContainer.classList.add("hide");
   imgsGrid.classList.remove("hide");
+  const elements = document.getElementsByClassName("animate__animated animate__rubberBand");
+
+  Array.from(elements).forEach(element => {
+    element.classList.remove("animate__animated", "animate__rubberBand");
+  });
   timer();
   setTimeout(() => {
     flipCards(imgDivArray);
   }, 3000);
+
+
 }
 function timer() {
   time = setInterval(() => {
 
-    var current_time = (Date.now() - startTime) / 1000;
-    document.getElementById("time").innerHTML = `<i class="fa-solid fa-stopwatch fa-2xl"> ${Math.floor(current_time)} </i> &nbsp &nbsp` +
+    elapsed_time = (Date.now() - startTime) / 1000;
+    elapsed_time = Math.floor(elapsed_time);
+    document.getElementById("time").innerHTML = `<i class="fa-solid fa-stopwatch fa-2xl"> ${Math.floor(elapsed_time)} </i> &nbsp &nbsp` +
       ` <i class="fas fa-mouse-pointer fa-2xl"> ${tries}</i> `;
 
   }, 100);
@@ -265,7 +286,7 @@ function winGame(username) {
 
   var newContent2 = paragraph.innerHTML.replace("{username}", currentUser);
   paragraph.innerHTML = newContent2;
-  second_paragraph.innerHTML = newContent;
+  //second_paragraph.innerHTML = newContent;
 }
 
 function looseGame(username) {
@@ -286,6 +307,8 @@ function areEqualCards(card1, card2) {
 function isValidUsername(name) {
   return name !== undefined && name.trim() !== "";
 }
+
+
 
 function isFlipped(card) {
 
@@ -328,7 +351,9 @@ function shuffle(array) {
 
 
 var usernameInput = document.getElementById("username");
+var numberInput = document.getElementsByName("school_number")[0];
 var placeholder = document.getElementById("placeholder");
+var placeholder_school_number = document.getElementsByName("placeholder-school-number")[0];
 
 usernameInput.addEventListener("focusin", () => {
   if (usernameInput.value == "") {
@@ -336,11 +361,25 @@ usernameInput.addEventListener("focusin", () => {
   }
 });
 
+
 usernameInput.addEventListener("focusout", () => {
   if (usernameInput.value == "") {
     placeholder.style.opacity = "1";
   }
 });
+
+numberInput.addEventListener("focusin", () => {
+  if (numberInput.value == "") {
+    placeholder_school_number.style.opacity = "0";
+  }
+});
+
+numberInput.addEventListener("focusout", () => {
+  if (numberInput.value == "") {
+    placeholder_school_number.style.opacity = "1";
+  }
+});
+
 
 
 let scoreToggle = document.getElementById("score-toggle")
@@ -351,11 +390,15 @@ scoreToggle.addEventListener("click", () => {
 })
 
 function big_message(title, message, type) {
-  Swal.fire(
-    title,
-    message,
-    type
-  )
+  swal.fire({
+    icon: type,
+    title: title,
+    text: message,
+    type: type
+  }).then(function () {
+    playAgain();
+  });
+
 }
 
 function checkEmail(email) {
@@ -367,8 +410,86 @@ function email_process() {
   var userEmail = document.getElementById("mail").value;
   if (checkEmail(userEmail)) {
     console.log("Geçerli email adresi");
+    if (hardMode == true) {
+      appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": userEmail, hardMode: false });
+
+    }
+    else {
+      appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": userEmail, hardMode: false });
+    }
     big_message("Teşekkürler", "Mail adresiniz ekibimize ulaştırılmıştır", 'success')
   } else {
     big_message("Hata", "Geçersiz mail adresi lütfen kontrol edin", 'error')
   }
 }
+
+function appendToStorage(name, data) {
+  var old = localStorage.getItem(name);
+  if (old === null) old = "";
+  data_json = JSON.stringify(data);
+  localStorage.setItem(name, old + data_json);
+}
+
+function list_scoreboard() {
+  if (localStorage.getItem("players") !== null) {
+    var players_list = document.getElementById("user-scores")
+
+    players_list.innerHTML = "";
+    //  <div data-username="adem"><h2>adem</h2> <p><i style="font-size:40px" class="fas fa-stopwatch" aria-hidden="true"></i> 49 saniye <i class="fas fa-mouse-pointer" aria-hidden="true"></i> 32 deneme</p></div>
+    var data = localStorage.getItem("players")
+
+    // JSON string'i parse ediyoruz
+    var parsedData = JSON.parse("[" + data.replace(/}{/g, "},{") + "]");
+    // Süreye göre sırala
+    parsedData.sort(function (a, b) {
+      return a.time - b.time;
+    });
+
+    // Hard mode'a göre önceliklendirerek tekrar sırala
+    parsedData.sort(function (a, b) {
+      if (a.hardMode && !b.hardMode) {
+        return -1;
+      } else if (!a.hardMode && b.hardMode) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    console.log(parsedData);
+
+
+    for (let i = 0; i < 5; i++) {
+      players_list.innerHTML += `<div data-username="${parsedData[i].name}"><h2 style="">${parsedData[i].name}</h2> <p><i style="font-size:20px" class="fas fa-stopwatch" aria-hidden="true">&nbsp ${parsedData[i].time}</i>   <i style="font-size:20;" class="fas fa-mouse-pointer" aria-hidden="true">&nbsp &nbsp${parsedData[i].click}</i> </p></div>`
+
+
+    }
+
+  }
+  else {
+    return;
+  }
+}
+function parseJSONData(data) {
+  // Her bir JSON nesnesine süslü parantezler ekleme
+  data = "[" + data.replace(/}{/g, "},{") + "]";
+
+  // JSON string'i parse etme
+  var jsonData = JSON.parse(data);
+
+  return jsonData;
+}
+
+
+function isValidNumber(input) {
+  const value = parseInt(input.value);
+  if (isNaN(value)) {
+    input.value = '';
+  }
+}
+
+
+setInterval(function () {
+  list_scoreboard()
+
+}, 1000);
