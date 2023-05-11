@@ -66,7 +66,8 @@ let startTime;
 let scoresController = scoreBarController("user-scores");
 let card2 = document.getElementsByClassName("left-card card")[1];
 let elapsed_time;
-
+let wrong = 0;
+let losed = false; //0 ise kazandı 1 ise kaybetti
 
 
 imgDivArray.forEach(targetCard => {
@@ -81,6 +82,7 @@ imgDivArray.forEach(targetCard => {
       } else {
         let lastCard = discoveredCards[discoveredCards.length - 1];
         tries++;
+        wrong++;
         if (areEqualCards(targetCard, lastCard)) {
           lastCard.classList.add("animate__animated", "animate__rubberBand")
           console.log(lastCard)
@@ -98,7 +100,7 @@ imgDivArray.forEach(targetCard => {
           setTimeout(() => {
             lastCard.classList.add("flipped-cell");
             targetCard.classList.add("flipped-cell");
-            if (hardMode) {
+            if (hardMode && wrong > 3) {
               looseGame(currentUser);
             }
           }, 300);
@@ -124,7 +126,7 @@ document.addEventListener("keydown", event => {
 
 for (let btn of playAgainBtns) {
   btn.addEventListener("click", function () {
-    appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": null, hardMode: false });
+    appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": null, hardMode: false, losed: losed });
   })
   btn.addEventListener("click", playAgain);
 
@@ -189,8 +191,7 @@ function scoreBarController(barId) {
 
       let userContainer = this.getUser(username);
 
-      userContainer.lastElementChild.innerHTML = `<p>kaybettin! - ${tries -
-        1} defa hata yaptın </p>`;
+      userContainer.lastElementChild.innerHTML = `<p>Kaybettin! - ${tries} defa hata yaptın </p>`;
     }
   };
 }
@@ -287,17 +288,19 @@ function winGame(username) {
   var newContent2 = paragraph.innerHTML.replace("{username}", currentUser);
   paragraph.innerHTML = newContent2;
   //second_paragraph.innerHTML = newContent;
+  losed = false;
 }
 
 function looseGame(username) {
   let triesSpan = document.getElementById("tries-span");
-  let triesInARow = tries - 1;
-  scoresController.setUserLost(username);
+  let triesInARow = tries;
+  // scoresController.qsetUserLost(username);
   triesSpan.textContent = triesInARow;
   clearInterval(time);
 
   imgsGrid.classList.add("hide");
   looseDiv.classList.remove("hide");
+  losed = true;
 }
 
 function areEqualCards(card1, card2) {
@@ -401,6 +404,19 @@ function big_message(title, message, type) {
 
 }
 
+
+
+function big_message_error(title, message, type) {
+  swal.fire({
+    icon: type,
+    title: title,
+    text: message,
+    type: type
+
+  });
+
+}
+
 function checkEmail(email) {
   var re = /\S+@\S+\.\S+/;
   return re.test(email);
@@ -411,15 +427,15 @@ function email_process() {
   if (checkEmail(userEmail)) {
     console.log("Geçerli email adresi");
     if (hardMode == true) {
-      appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": userEmail, hardMode: false });
+      appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": userEmail, hardMode: true, losed: losed });
 
     }
     else {
-      appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": userEmail, hardMode: false });
+      appendToStorage("players", { "name": currentUser, "time": elapsed_time, "click": tries, number: school_number, "email": userEmail, hardMode: false, losed: losed });
     }
     big_message("Teşekkürler", "Mail adresiniz ekibimize ulaştırılmıştır", 'success')
   } else {
-    big_message("Hata", "Geçersiz mail adresi lütfen kontrol edin", 'error')
+    big_message_error("Hata", "Geçersiz mail adresi lütfen kontrol edin", 'error')
   }
 }
 
@@ -436,38 +452,34 @@ function list_scoreboard() {
 
     players_list.innerHTML = "";
     //  <div data-username="adem"><h2>adem</h2> <p><i style="font-size:40px" class="fas fa-stopwatch" aria-hidden="true"></i> 49 saniye <i class="fas fa-mouse-pointer" aria-hidden="true"></i> 32 deneme</p></div>
-    var data = localStorage.getItem("players")
+    let rawData = localStorage.getItem("players")
+    // Verileri doğru JSON biçimine dönüştürelim
+    rawData = "[" + rawData.replace(/}{/g, "},{") + "]";
+    const data = JSON.parse(rawData);
 
-    // JSON string'i parse ediyoruz
-    var parsedData = JSON.parse("[" + data.replace(/}{/g, "},{") + "]");
-    // Süreye göre sırala
-    parsedData.sort(function (a, b) {
-      return a.time - b.time;
-    });
-
-    // Hard mode'a göre önceliklendirerek tekrar sırala
-    parsedData.sort(function (a, b) {
-      if (a.hardMode && !b.hardMode) {
-        return -1;
-      } else if (!a.hardMode && b.hardMode) {
-        return 1;
-      } else {
-        return 0;
+    // losed=true olanları filtreleyelim ve hardMode ve zaman öncelikli olarak sıralayalım
+    const filteredData = data.filter(d => !d.losed);
+    const sortedData = filteredData.sort((a, b) => {
+      if (a.hardMode === b.hardMode) {
+        return a.time - b.time;
       }
+      return b.hardMode - a.hardMode;
     });
 
-    console.log(parsedData);
+    // Sonuçları yazdıralım
+    console.log(sortedData);
+    parsedDatas = sortedData;
+    //console.log(parsedDatas);
+    for (let i = 0; i < 5 && sortedData[i]; i++) {
+      if(sortedData[i].hardMode === true ){
+        console.log(sortedData[i].hardMode);
+        players_list.innerHTML += `<div data-username="${sortedData[i].name}"><h2 style="">${sortedData[i].name} (Zor)</h2> <p><i style="font-size:20px" class="fas fa-stopwatch" aria-hidden="true">&nbsp ${sortedData[i].time}</i>   <i style="font-size:20;" class="fas fa-mouse-pointer" aria-hidden="true">&nbsp &nbsp${sortedData[i].click}</i> </p></div>`;
+      }
+      else {
+        players_list.innerHTML += `<div data-username="${sortedData[i].name}"><h2 style="">${sortedData[i].name}</h2> <p><i style="font-size:20px" class="fas fa-stopwatch" aria-hidden="true">&nbsp ${sortedData[i].time}</i>   <i style="font-size:20;" class="fas fa-mouse-pointer" aria-hidden="true">&nbsp &nbsp${sortedData[i].click}</i> </p></div>`;
 
-
-    for (let i = 0; i < 5; i++) {
-      players_list.innerHTML += `<div data-username="${parsedData[i].name}"><h2 style="">${parsedData[i].name}</h2> <p><i style="font-size:20px" class="fas fa-stopwatch" aria-hidden="true">&nbsp ${parsedData[i].time}</i>   <i style="font-size:20;" class="fas fa-mouse-pointer" aria-hidden="true">&nbsp &nbsp${parsedData[i].click}</i> </p></div>`
-
-
+      }
     }
-
-  }
-  else {
-    return;
   }
 }
 function parseJSONData(data) {
