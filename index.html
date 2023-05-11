@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html manifest="uygulama1.appcache" lang="en">
 
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -36,9 +36,7 @@
         height: 64px;
         min-width: 200px;
         margin-right: 10px;
-        " id="time" class=" card">
-
-        </div>
+        " id="time" class=" card"><i class="fa-solid fa-stopwatch fa-2xl"> </i> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <i class="fas fa-mouse-pointer fa-2xl" aria-hidden="true"></i> </div>
         <div class="left-card card">
             <div class="choose-username">
                 <h1>İsmini Gir</h1>
@@ -48,9 +46,9 @@
 
                 </div>
                 <div class="username-container">
-                    <input type="text" id="" oninput="isValidNumber(this)" name="school_number" autocomplete="off"
+                    <input type="text" maxlength="9" id="" oninput="isValidNumber(this)" name="school_number" autocomplete="off"
                         spellcheck="false" />
-                    <p class="placeholder" name="placeholder-school-number" id="placeholder">Numarası</p>
+                    <p class="placeholder" name="placeholder-school-number" id="placeholder">Okul Numarası</p>
                 </div>
                 <button id="play" class="game-button">
                     <i class="fas fa-gamepad"></i>
@@ -62,14 +60,14 @@
             </div>
 
             <div id="mode-container" class="hide">
-                <h1>Zorluk Seç</h1>
+                <h1>Odaklan Ve Başla</h1>
                 <div class="mode-btns">
                     <button id="easy-btn" class="game-button">
-                        Kolay
+                        Başla
                     </button>
-                    <button id="hard-btn" class="game-button">
+                    <!--<button id="hard-btn" class="game-button">
                         Zor
-                    </button>
+                    </button>-->
                 </div>
             </div>
 
@@ -86,15 +84,13 @@
                     e-mailinizi gönderin. Katılımınızı bekliyoruz.
                 </h4>
                 <input type="mail" value="" id="mail" placeholder="E-Posta" />
-                <button onclick="email_process()" class="game-button">Gönder</button>
+                <div>
+                    <button onclick="email_process()" class="game-button">Gönder</button>
+                    <button class="play-again-btn game-button">
+                        <i class="fas fa-undo-alt fa-xs"></i>
+                    </button>
+                </div>
                 <br>
-                <button class="play-again-btn game-button">
-                    <i class="fas fa-undo-alt"></i>
-                </button>
-
-
-
-
             </div>
 
             <div id="loose-container" class="final-container hide">
@@ -130,6 +126,5 @@
         </script>
 </body>
 <script src="script.js"></script>
-<script src="confetti.min.js"></script>
 
 </html>

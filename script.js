@@ -65,7 +65,7 @@ let school_number = "";
 let startTime;
 let scoresController = scoreBarController("user-scores");
 let card2 = document.getElementsByClassName("left-card card")[1];
-let elapsed_time;
+let elapsed_time = 0 - 3;
 let wrong = 0;
 let losed = false; //0 ise kazandı 1 ise kaybetti
 
@@ -137,10 +137,10 @@ easyBtn.addEventListener("click", () => {
   startGame(currentUser);
 });
 
-hardBtn.addEventListener("click", () => {
+/*hardBtn.addEventListener("click", () => {
   hardMode = true;
   startGame(currentUser);
-});
+});*/
 
 
 function scoreBarController(barId) {
@@ -148,7 +148,10 @@ function scoreBarController(barId) {
 
   return {
     getUser(username) {
-      return document.querySelector(`[data-username=${username}]`);
+      const name = `${username}`;
+      const space = name.split(' ');
+      const result = space.join('-');
+      return document.querySelector(`[data-username=${result}]`);
     },
 
     hasUser(username) {
@@ -205,13 +208,22 @@ function createUserScoreDiv(username) {
 
 
 function goToModePage() {
-  let username = document.getElementById("username").value;
-  school_number = document.querySelector("body > div > div.left-card.card > div.choose-username > div:nth-child(3) > input[type=text]").value;
-  if (isValidUsername(username) && isValidUsername(school_number)) {
-    currentUser = username.toLowerCase();
-    modeContainer.classList.remove("hide");
-    chooseUserDiv.classList.add("hide");
+  school_number = document.querySelector("body > div > div.left-card.card > div.choose-username > div:nth-child(3) > input[type=text]").value
+
+  if (check_if_played(`${school_number}`) === false) {
+    let username = document.getElementById("username").value;
+    school_number = document.querySelector("body > div > div.left-card.card > div.choose-username > div:nth-child(3) > input[type=text]").value;
+    if (isValidUsername(username) && isValidUsername(school_number)) {
+      currentUser = username.toLowerCase();
+      modeContainer.classList.remove("hide");
+      chooseUserDiv.classList.add("hide");
+    }
   }
+  else {
+    big_message("Hata" , "Zaten daha önce 1 defa oynamışsınız herkesin 1 defa oynama hakkı vardır." , "error");
+  }
+
+
 }
 function playAgain() {
   currentUser = "";
@@ -256,6 +268,7 @@ function startGame(username) {
 
 }
 function timer() {
+  elapsed_time = elapsed_time - 3;
   time = setInterval(() => {
 
     elapsed_time = (Date.now() - startTime) / 1000;
@@ -467,12 +480,11 @@ function list_scoreboard() {
     });
 
     // Sonuçları yazdıralım
-    console.log(sortedData);
     parsedDatas = sortedData;
     //console.log(parsedDatas);
     for (let i = 0; i < 5 && sortedData[i]; i++) {
-      if(sortedData[i].hardMode === true ){
-        console.log(sortedData[i].hardMode);
+      if (sortedData[i].hardMode === true) {
+
         players_list.innerHTML += `<div data-username="${sortedData[i].name}"><h2 style="">${sortedData[i].name} (Zor)</h2> <p><i style="font-size:20px" class="fas fa-stopwatch" aria-hidden="true">&nbsp ${sortedData[i].time}</i>   <i style="font-size:20;" class="fas fa-mouse-pointer" aria-hidden="true">&nbsp &nbsp${sortedData[i].click}</i> </p></div>`;
       }
       else {
@@ -498,6 +510,30 @@ function isValidNumber(input) {
   if (isNaN(value)) {
     input.value = '';
   }
+}
+
+function check_if_played(number) {
+  if (localStorage.getItem('players') !== null) {
+    let rawData = localStorage.getItem("players")
+    rawData = "[" + rawData.replace(/}{/g, "},{") + "]";
+    const data = JSON.parse(rawData);
+    const filteredData = data.filter(d => !d.losed);
+    const sortedData = filteredData.sort((a, b) => {
+      if (a.hardMode === b.hardMode) {
+        return a.time - b.time;
+      }
+      return b.hardMode - a.hardMode;
+    });
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].number === number) {
+        return true;
+      }
+    }
+    return false;
+  } else {
+    return false;
+  }
+
 }
 
 
